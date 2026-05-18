@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>汪国栋 - 嵌入式软件工程师简历</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --page-bg: #edf3f8;
+      --paper: #ffffff;
+      --ink: #17212e;
+      --text: #263241;
+      --muted: #667789;
+      --line: #d9e4ee;
+      --blue-900: #0f2f4f;
+      --blue-800: #174a73;
+      --blue-700: #1f6397;
+      --blue-100: #e8f2fb;
+      --blue-050: #f5f9fd;
+      --gold: #b8872d;
+      --shadow: 0 18px 42px rgba(23, 51, 80, 0.12);
+      --card-shadow: 0 10px 24px rgba(21, 72, 110, 0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(31, 99, 151, 0.15), transparent 34%),
+        linear-gradient(180deg, #f7fbff 0%, var(--page-bg) 38%, #e6eef5 100%);
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      line-height: 1.78;
+      letter-spacing: 0;
+    }
+
+    .page-shell {
+      max-width: 960px;
+      margin: 34px auto;
+      padding: 0 18px;
+    }
+
+    .resume {
+      overflow: hidden;
+      border: 1px solid rgba(31, 99, 151, 0.12);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 142px;
+      gap: 28px;
+      padding: 36px 42px 30px;
+      background:
+        linear-gradient(135deg, rgba(15, 47, 79, 0.98), rgba(31, 99, 151, 0.92)),
+        var(--blue-900);
+      color: #ffffff;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -90px;
+      width: 230px;
+      height: 230px;
+      border: 34px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+
+    .hero-content,
+    .photo {
+      position: relative;
+      z-index: 1;
+    }
+
+    .resume-title {
+      margin: 0 0 14px;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .name-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    .name {
+      margin: 0;
+      font-size: 42px;
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .intent {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 4px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.13);
+      color: #f5fbff;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      margin-top: 22px;
+      max-width: 620px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+    }
+
+    .contact-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .photo {
+      display: grid;
+      place-items: center;
+      width: 128px;
+      height: 158px;
+      align-self: center;
+      border: 2px solid rgba(255, 255, 255, 0.58);
+      border-radius: 14px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .content {
+      padding: 28px 42px 42px;
+    }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .section:first-child {
+      margin-top: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 0 0 16px;
+      color: var(--blue-900);
+      font-size: 21px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 8px;
+      height: 24px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, var(--blue-700), var(--blue-900));
+      flex: 0 0 auto;
+    }
+
+    .section-title::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, var(--line), transparent);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff, var(--blue-050));
+      font-size: 14.5px;
+    }
+
+    .info-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-100);
+      color: var(--blue-800);
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .label {
+      color: var(--blue-900);
+      font-weight: 800;
+    }
+
+    .panel {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: var(--card-shadow);
+    }
+
+    .panel + .panel {
+      margin-top: 16px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .panel-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .date {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--blue-100);
+      color: var(--blue-800);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .honor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .honor-item {
+      padding: 12px 14px;
+      border: 1px solid #e2d7c3;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #fffdf8, #fbf6ec);
+      color: #46351a;
+      font-size: 14px;
+      box-shadow: 0 8px 18px rgba(184, 135, 45, 0.08);
+    }
+
+    .body-text {
+      margin: 0;
+      color: var(--text);
+      font-size: 14.5px;
+      text-align: justify;
+    }
+
+    .body-text + .body-text {
+      margin-top: 10px;
+    }
+
+    .content-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .content-list li {
+      margin: 7px 0;
+      color: var(--text);
+      font-size: 14.5px;
+      text-align: justify;
+    }
+
+    strong {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--blue-100);
+      color: var(--blue-800);
+      font-weight: 800;
+    }
+
+    .gold-strong {
+      background: #fbefd9;
+      color: #8a5b10;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .tag {
+      padding: 5px 10px;
+      border: 1px solid #bed6e9;
+      border-radius: 999px;
+      background: #f2f8fd;
+      color: var(--blue-800);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .project-card,
+    .intern-card {
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .project-card:hover,
+    .intern-card:hover {
+      transform: translateY(-3px);
+      border-color: #b7d3e8;
+      box-shadow: 0 16px 34px rgba(21, 72, 110, 0.14);
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 8px;
+    }
+
+    .role {
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #f0f4f8;
+      color: #536273;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .detail-block {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #cfdae4;
+    }
+
+    .detail-heading {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 6px;
+      color: var(--blue-900);
+      font-size: 14.5px;
+      font-weight: 900;
+    }
+
+    .detail-heading::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: var(--blue-700);
+    }
+
+    .project-link {
+      color: var(--blue-700);
+      text-decoration: none;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+      transition: color 160ms ease, background-color 160ms ease;
+    }
+
+    .project-link:hover {
+      color: var(--blue-900);
+      background: var(--blue-100);
+    }
+
+    .summary {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(232, 242, 251, 0.78), rgba(255, 255, 255, 0.96));
+      box-shadow: var(--card-shadow);
+    }
+
+    .summary p {
+      margin: 0;
+      color: var(--text);
+      font-size: 14.5px;
+      text-align: justify;
+    }
+
+    @media (max-width: 760px) {
+      .page-shell {
+        margin: 0;
+        padding: 0;
+      }
+
+      .resume {
+        border-radius: 0;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 28px 22px;
+      }
+
+      .photo {
+        width: 118px;
+        height: 142px;
+      }
+
+      .contact-grid,
+      .info-grid,
+      .honor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content {
+        padding: 24px 18px 34px;
+      }
+
+      .name {
+        font-size: 34px;
+      }
+
+      .panel-head {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .date {
+        align-self: flex-start;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .page-shell {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .resume {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .hero {
+        padding: 24px 34px;
+      }
+
+      .content {
+        padding: 24px 34px 34px;
+      }
+
+      .panel,
+      .summary {
+        box-shadow: none;
+      }
+
+      .project-card,
+      .intern-card,
+      .section {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <main class="resume">
+      <header class="hero">
+        <div class="hero-content">
+          <p class="resume-title">个人简历</p>
+          <div class="name-row">
+            <h1 class="name">汪国栋</h1>
+            <div class="intent">求职意向：嵌入式软件工程师</div>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-item"><span class="contact-icon">电</span><span>手机号码：182 8083 0364</span></div>
+            <div class="contact-item"><span class="contact-icon">邮</span><span>邮箱：1944505795@qq.com</span></div>
+            <div class="contact-item"><span class="contact-icon">籍</span><span>籍贯：四川省南充市</span></div>
+            <div class="contact-item"><span class="contact-icon">校</span><span>毕业院校：成都大学（本科）</span></div>
+          </div>
+        </div>
+        <div class="photo">个人照片</div>
+      </header>
+
+      <div class="content">
+        <section class="section">
+          <h2 class="section-title">个人信息</h2>
+          <div class="info-grid">
+            <div class="info-item"><span class="info-mark">名</span><span><span class="label">姓名：</span>汪国栋</span></div>
+            <div class="info-item"><span class="info-mark">生</span><span><span class="label">出生年月：</span>2004/10</span></div>
+            <div class="info-item"><span class="info-mark">校</span><span><span class="label">毕业院校：</span>成都大学（本科）</span></div>
+            <div class="info-item"><span class="info-mark">籍</span><span><span class="label">籍贯：</span>四川省南充市</span></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">教育背景</h2>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">成都大学 · 自动化</h3>
+                <p class="panel-subtitle">本科</p>
+              </div>
+              <span class="date">2023.09 - 2027.06</span>
+            </div>
+            <p class="body-text">
+              <span class="label">主修课程：</span>自动控制理论、模拟电子电路、数字电子电路、信号与系统、电气制图及 <strong>CAD</strong>、电气控制技术与 <strong>PLC</strong>、电机与拖动、电力电子技术、微机原理及应用、现代控制理论、计算机控制技术、单片机应用及系统控制等
+            </p>
+          </article>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">荣誉技能</h2>
+          <div class="honor-grid">
+            <div class="honor-item">2023-2024 成都大学本科荣誉奖学金三等奖</div>
+            <div class="honor-item">2024-2025 成都大学本科荣誉奖学金三等奖</div>
+            <div class="honor-item">2024 年全国大学生创新创业能力大赛初赛一等奖</div>
+            <div class="honor-item">2025 大学生创新训练计划项目获省级立项</div>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">个人技能</h3>
+                <p class="panel-subtitle">嵌入式开发、实时操作系统、图形界面、固件升级与硬件设计</p>
+              </div>
+            </div>
+            <p class="body-text">
+              英语水平 <strong>CET-4</strong>，熟练掌握 <strong>STM32</strong> 系列开发，具备标准库与 <strong>HAL</strong> 库双库开发经验。熟悉 <strong>C 语言</strong>，具备嵌入式 C 语言开发基础。熟悉 <strong>FreeRTOS</strong> 实时操作系统，熟练运用任务调度、信号量、队列、互斥锁等核心机制实现多任务协同开发；了解 <strong>RT-Thread</strong> 操作系统，熟悉信号量、互斥量、定时器、<strong>FinSH</strong> 组件的使用。熟悉 <strong>OTA</strong> 升级技术；熟悉 <strong>LVGL</strong> 技术的使用；熟练使用 <strong>Keil MDK</strong>、<strong>VS Code</strong>、<strong>STM32CubeMX</strong>、<strong>Git</strong>，掌握代码调试、性能分析与固件烧录流程。具备 <strong>PCB</strong> 板绘制能力，了解 PCB 设计流程，能够完成从原理图到 PCB 版图的设计与优化工作。
+            </p>
+            <div class="skill-tags">
+              <span class="tag">STM32</span>
+              <span class="tag">FreeRTOS</span>
+              <span class="tag">RT-Thread</span>
+              <span class="tag">LVGL</span>
+              <span class="tag">OTA</span>
+              <span class="tag">HAL</span>
+              <span class="tag">Keil MDK</span>
+              <span class="tag">STM32CubeMX</span>
+              <span class="tag">Git</span>
+              <span class="tag">PCB</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">实习经历</h2>
+          <article class="panel intern-card">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">成都华科威电子科技有限公司 · 嵌入式研发助理</h3>
+                <p class="panel-subtitle">所属部门：技术组</p>
+              </div>
+              <span class="date">2026.03 - 至今</span>
+            </div>
+            <p class="body-text">
+              <span class="label">工作内容：</span>基于 <strong>HC32</strong> 的智能照明控制：参与照明灯具的嵌入式辅助研发，负责底层 <strong>ADC</strong> 采样算法的验证与调优，并完成红外遥控功能的调试。基于 <strong>STM32</strong> 的车载空调 <strong>BMS</strong> 辅助研发：协助研发 BMS 电池管理系统，负责充放电电流检测模块及核心控制逻辑的测试用例执行与功能验证。产品测试与稳定性优化：深度跟进嵌入式软件开发的全生命周期，独立完成功能测试、缺陷记录与问题复现。协助研发工程师定位底层驱动与算法 <strong>Bug</strong> 并验证修复方案，有效提升了最终产品的运行稳定性。
+            </p>
+          </article>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">项目经历</h2>
+
+          <article class="panel project-card">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">边缘 AI 的低功耗智能健康监护穿戴设备</h3>
+                <div class="project-meta">
+                  <span class="role">全栈开发</span>
+                </div>
+              </div>
+              <span class="date">2026.02 - 2026.04</span>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目描述</div>
+              <p class="body-text">
+                使用 <strong>STM32U575VGT6</strong> 为主控的基于 <strong>FreeRTOS</strong> 的低功耗智能健康监护可穿戴设备，融合 <strong>边缘 AI</strong>、传感器数据采集与 <strong>4G</strong> 通信，实现跌倒检测、远程在线 <strong>OTA</strong> 升级功能、生命体征监测及远程告警功能。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">核心机制</div>
+              <p class="body-text">
+                三轴加速度计实时采集，结合 <strong>AI</strong> 模型：提取轻量统计与尖峰特征，用小型全连接神经网络判别，结合基于瞬时加速度差分的尖峰阈值做联合决策实现跌倒检测；集成 <strong>GPS + 4G</strong> 模块，实现紧急短信与定位上报；支持心率血氧检测，检测到数据和 GPS 信号自动通过 <strong>MQTT</strong> 上传至云平台 <strong>OneNET</strong>；基于 <strong>LVGL</strong> 实现触摸屏 UI，分主页面、血氧检测页面、GPS 获取页面、联系人设置页面、摔倒提醒页面、OTA 升级确定页面，良好的人机交互体验；采用分散加载技术，将 LVGL 核心渲染及混合高频函数重定位至 <strong>SRAM</strong> 运行，显著提升界面刷屏帧率与图形流畅度。通过 <strong>HTTP</strong> 实现远程在线 OTA 升级功能，通过 <strong>MD5</strong> 严格校验，实现出错回滚机制。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">难点与解决方案</div>
+              <p class="body-text">
+                为降低功耗，用 <strong>NMOS</strong> 低端开关控制外设供电、添加一键息屏点击亮屏降低待机功耗；紧急联系人设置无记忆问题，通过读写 <strong>Flash</strong> 保存，添加触摸屏自定义和保存号码。为解决竞态和阻塞，采用互斥锁和队列实现任务调度。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目开源以及演示</div>
+              <p class="body-text">（待上传）</p>
+            </div>
+          </article>
+
+          <article class="panel project-card">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">基于 RT-Thread 的多串锂电池管理系统（BMS）</h3>
+                <div class="project-meta">
+                  <span class="role">软件开发</span>
+                </div>
+              </div>
+              <span class="date">2026.04 - 2026.5</span>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目描述</div>
+              <p class="body-text">
+                基于 <strong>STM32F103C8T6</strong> 标准库结合 <strong>BQ76920</strong> 前端芯片，开发多节锂电池的底层管理系统。采用 <strong>RT-Thread</strong> 实时操作系统，实现高精度的状态估算、毫秒级硬件保护、被动均衡及 <strong>FinSH</strong> 命令行交互，满足电池包的安全监控与通信需求。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">核心机制</div>
+              <p class="body-text">
+                三层软件架构：构建 <strong>BSP</strong>、<strong>HAL</strong>、<strong>APP</strong> 三层架构，实现底层硬件与上层业务逻辑的解耦。多线程实时调度：基于 RT-Thread 将系统解耦为采集、保护、分析、均衡、信息交互 5 个独立任务。高精度 <strong>SOC</strong> 估算：采用开路电压法确定初始电量，结合安时积分法与温度补偿算法计算运行电量。均衡与保护机制：利用 BQ76920 结合外部中断，实现短路、过流、欠压等硬件级快速断电保护；采用被动均衡策略，并利用软件定时器精准控制均衡后的电压回升静置时间。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">难点与解决方案</div>
+              <p class="body-text">
+                外设并发与 <strong>CPU</strong> 开销优化：针对串口 FinSH 命令行高频读取占用 CPU 的问题，设计了“硬件中断 + 环形缓冲区 + 信号量”机制。线程阻塞等待中断信号量唤醒，彻底消除 CPU 轮询开销，实现数据无丢失。多线程数据竞态保护：针对不同任务频繁共享 <strong>I2C</strong> 总线和底层采集数据，采用互斥锁同步机制，确保并发访问下数据安全性与业务逻辑的时序稳定。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目开源以及演示</div>
+              <p class="body-text">（待上传）</p>
+            </div>
+          </article>
+
+          <article class="panel project-card">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">基于 FreeRTOS 的智能天气语音时钟</h3>
+                <div class="project-meta">
+                  <span class="role">全栈开发</span>
+                </div>
+              </div>
+              <span class="date">2025.09 - 2025.11</span>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目描述</div>
+              <p class="body-text">
+                项目以 <strong>STM32F407VET6</strong> 为主控，基于 <strong>FreeRTOS</strong> 操作系统开发，兼容标准库与 <strong>HAL</strong> 库双版本。系统集成环境监测、<strong>WiFi</strong> 网络数据获取、语音交互、智能报警及 <strong>LVGL</strong> 人机交互功能。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">核心机制</div>
+              <p class="body-text">
+                FreeRTOS 任务调度管理，队列与信号量完成任务通信；通过串口与 <strong>ESP32</strong> 模块进行通信，并且通过中断接收校验指令响应准确性，获取天气数据和网络时间；采用 LVGL 驱动，搭配 <strong>SPI + DMA</strong> 显著提升刷屏显示效率；通过 <strong>I2C</strong> 协议与温湿度传感器通信，支持温湿度阈值报警、按键配网连接用户 WiFi、语音指令识别与天气环境数据播报功能。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">难点与解决方案</div>
+              <p class="body-text">
+                <strong>LCD</strong> 屏幕多任务数据显示存在竟态，使用队列传输数据，避免数据竞争。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目开源以及演示</div>
+              <p class="body-text">
+                <a class="project-link" href="https://blog.csdn.net/wgdddd6/article/details/158355781">https://blog.csdn.net/wgdddd6/article/details/158355781</a>
+              </p>
+            </div>
+          </article>
+
+          <article class="panel project-card">
+            <div class="panel-head">
+              <div>
+                <h3 class="panel-title">多模态感知两轮自平衡系统</h3>
+                <div class="project-meta">
+                  <span class="role">软件开发</span>
+                </div>
+              </div>
+              <span class="date">2025.12 - 2026.02</span>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目描述</div>
+              <p class="body-text">
+                本项目基于 <strong>STM32F103C8T6</strong> 主控开发，实现标准库与 <strong>HAL</strong> 库双版本工程，打造集姿态稳定控制、自主循迹、智能避障、蓝牙远程操控于一体的两轮闭环平衡小车。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">核心机制</div>
+              <p class="body-text">
+                <strong>MPU6050</strong> 经软 <strong>I2C</strong> 采集陀螺仪和加速度计数据，<strong>卡尔曼滤波</strong> 解算后的姿态角；搭建“直立 - 速度 - 转向”三环 <strong>PID</strong> 控制架构，红外循迹 <strong>PD</strong> 闭环控制；超声波智能避障，倒地检测停机保护，扶正自恢复；手机蓝牙远程操控。
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">难点与解决方案</div>
+              <p class="body-text">
+                循迹效果差，改用 PD 闭环控制。姿态解算零漂严重，加入卡尔曼滤波，减弱迭代零漂，稳定性大幅提高
+              </p>
+            </div>
+            <div class="detail-block">
+              <div class="detail-heading">项目开源以及演示</div>
+              <p class="body-text">
+                <a class="project-link" href="https://blog.csdn.net/wgdddd6/article/details/158102065">https://blog.csdn.net/wgdddd6/article/details/158102065</a>
+              </p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">自我评价</h2>
+          <div class="summary">
+            <p>
+              学习方面曾获专业平均学分绩点第一。后续成绩也均在专业前 30% 左右。加入学校五星级社团 <strong>BIM</strong> 协会，多次参与志愿者服务，义务劳动，曾担任班级安全委员，BIM 协会干事，主导策划了多次班会活动。本人性格开朗，待人热情，正直细心，责任心强；能吃苦耐劳，抗压能力强，能承担高负荷工作压力；善于面对挑战，具备良好的沟通表达和组织协调能力；有良好的文字表达能力、商务谈判能力，能够独立处理工作任务，有良好的职业操守，做事干练，善于团队合作。
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
