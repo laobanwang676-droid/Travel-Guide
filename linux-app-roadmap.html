@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>嵌入式 Linux 应用开发学习路线</title>
+  <style>
+    :root {
+      --bg: #f6f1e8;
+      --bg-soft: #fffaf2;
+      --paper: rgba(255, 252, 246, 0.92);
+      --ink: #1d2a2f;
+      --text: #32434a;
+      --muted: #6f7f84;
+      --line: rgba(30, 73, 72, 0.15);
+      --teal: #1f5c5a;
+      --teal-deep: #163f3d;
+      --teal-soft: #dceceb;
+      --amber: #c9802e;
+      --amber-soft: #f8ead4;
+      --shadow: 0 24px 60px rgba(27, 49, 49, 0.14);
+      --card-shadow: 0 16px 34px rgba(38, 72, 72, 0.08);
+      --radius: 22px;
+      --radius-sm: 16px;
+      --mono: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
+      --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --serif: "Source Han Serif SC", "Songti SC", "STSong", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.75;
+      background:
+        radial-gradient(circle at top left, rgba(201, 128, 46, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(31, 92, 90, 0.12), transparent 30%),
+        linear-gradient(180deg, #fef9f2 0%, #f6f1e8 42%, #efe8dc 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code,
+    pre {
+      font-family: var(--mono);
+    }
+
+    .shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border: 1px solid rgba(22, 63, 61, 0.1);
+      border-radius: 30px;
+      background:
+        linear-gradient(140deg, rgba(22, 63, 61, 0.96), rgba(31, 92, 90, 0.92) 58%, rgba(201, 128, 46, 0.88)),
+        #1f5c5a;
+      color: #fff9f0;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 249, 240, 0.16);
+    }
+
+    .hero::before {
+      width: 320px;
+      height: 320px;
+      right: -120px;
+      top: -120px;
+    }
+
+    .hero::after {
+      width: 220px;
+      height: 220px;
+      right: 100px;
+      bottom: -120px;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.9fr);
+      gap: 22px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 249, 240, 0.14);
+      border: 1px solid rgba(255, 249, 240, 0.18);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      margin: 18px 0 14px;
+      color: #fffdf8;
+      font-family: var(--serif);
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      color: rgba(255, 249, 240, 0.88);
+      font-size: 17px;
+    }
+
+    .hero-points {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-card {
+      padding: 18px 18px 16px;
+      border-radius: 20px;
+      background: rgba(255, 250, 244, 0.12);
+      border: 1px solid rgba(255, 250, 244, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 245, 229, 0.78);
+    }
+
+    .hero-card span {
+      display: block;
+      color: #fffdf9;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .hero-chain {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-chain span {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 248, 238, 0.12);
+      border: 1px solid rgba(255, 248, 238, 0.16);
+      font-size: 13px;
+      color: #fff7ed;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 18px;
+      padding: 22px 20px;
+      border: 1px solid rgba(22, 63, 61, 0.08);
+      border-radius: 24px;
+      background: rgba(255, 251, 245, 0.78);
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .toc h2,
+    .section-head h2,
+    .phase-title h2 {
+      margin: 0;
+      color: var(--teal-deep);
+      font-family: var(--serif);
+    }
+
+    .toc h2 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .toc p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toc nav {
+      display: grid;
+      gap: 10px;
+    }
+
+    .toc a {
+      padding: 10px 12px;
+      border-radius: 14px;
+      color: var(--text);
+      font-size: 14px;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .toc a:hover {
+      background: var(--teal-soft);
+      border-color: rgba(31, 92, 90, 0.14);
+      transform: translateX(4px);
+    }
+
+    main {
+      display: grid;
+      gap: 22px;
+    }
+
+    .panel {
+      padding: 26px;
+      border-radius: 26px;
+      border: 1px solid rgba(22, 63, 61, 0.08);
+      background: var(--paper);
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .section-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .summary-grid,
+    .phase-grid,
+    .step-grid,
+    .command-grid,
+    .project-grid,
+    .pitfall-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary-card,
+    .step-card,
+    .project-card,
+    .pitfall-card,
+    .phase-card {
+      border-radius: var(--radius);
+      border: 1px solid rgba(22, 63, 61, 0.08);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(250, 246, 238, 0.88));
+      box-shadow: 0 12px 30px rgba(33, 56, 56, 0.06);
+    }
+
+    .summary-card {
+      padding: 18px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--teal-deep);
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .phase-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .phase-card {
+      padding: 18px;
+    }
+
+    .phase-card .tag,
+    .phase-badge,
+    .step-index,
+    .mini-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .phase-card .tag,
+    .phase-badge {
+      background: var(--amber-soft);
+      color: #8e5616;
+    }
+
+    .phase-card h3,
+    .phase-title h2,
+    .step-card h3,
+    .project-card h3,
+    .pitfall-card h3 {
+      margin: 12px 0 10px;
+      color: var(--teal-deep);
+    }
+
+    .phase-card p,
+    .step-card p,
+    .project-card p,
+    .pitfall-card p,
+    .phase-meta {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .phase-section {
+      padding: 28px;
+      border-radius: 30px;
+      background:
+        linear-gradient(180deg, rgba(255, 250, 242, 0.95), rgba(249, 244, 234, 0.88));
+      border: 1px solid rgba(22, 63, 61, 0.08);
+      box-shadow: var(--card-shadow);
+    }
+
+    .phase-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .phase-title p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .phase-meta {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .step-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .command-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .step-card {
+      overflow: hidden;
+    }
+
+    .command-card {
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid rgba(22, 63, 61, 0.08);
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(250, 246, 238, 0.88));
+      box-shadow: 0 12px 30px rgba(33, 56, 56, 0.06);
+    }
+
+    .command-body {
+      padding: 18px 18px 14px;
+    }
+
+    .command-card h3 {
+      margin: 10px 0 10px;
+      color: var(--teal-deep);
+      font-size: 21px;
+    }
+
+    .command-intro {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    .command-entry {
+      padding: 12px 0;
+      border-top: 1px dashed rgba(22, 63, 61, 0.12);
+    }
+
+    .command-entry:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .command-entry strong {
+      display: inline-block;
+      color: var(--teal-deep);
+      margin-bottom: 4px;
+    }
+
+    .command-entry p {
+      margin: 0;
+      color: var(--text);
+      font-size: 14.5px;
+    }
+
+    .command-scene {
+      margin-top: 6px !important;
+      color: #7a5b31 !important;
+      font-size: 14px !important;
+    }
+
+    .step-body {
+      padding: 18px 18px 16px;
+    }
+
+    .step-index {
+      background: rgba(31, 92, 90, 0.12);
+      color: var(--teal-deep);
+    }
+
+    .step-card h3 {
+      font-size: 20px;
+    }
+
+    .step-card .goal {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #7a5b31;
+    }
+
+    .code-block {
+      margin-top: 16px;
+      overflow: auto;
+      border-top: 1px solid rgba(22, 63, 61, 0.08);
+      background:
+        linear-gradient(180deg, rgba(24, 41, 48, 0.98), rgba(18, 31, 37, 1));
+      color: #edf6f7;
+    }
+
+    .code-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 16px 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(201, 128, 46, 0.16);
+      color: #ffd7a6;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    pre {
+      margin: 0;
+      padding: 14px 18px 18px;
+      font-size: 13px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .project-grid,
+    .pitfall-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .project-card,
+    .pitfall-card {
+      padding: 18px;
+    }
+
+    .mini-tag {
+      background: rgba(31, 92, 90, 0.1);
+      color: var(--teal-deep);
+    }
+
+    .chain-box {
+      padding: 22px;
+      border-radius: 22px;
+      border: 1px dashed rgba(31, 92, 90, 0.24);
+      background: linear-gradient(180deg, rgba(220, 236, 235, 0.5), rgba(255, 249, 241, 0.84));
+    }
+
+    .chain-box h3 {
+      margin: 0 0 10px;
+      color: var(--teal-deep);
+      font-family: var(--serif);
+      font-size: 26px;
+    }
+
+    .chain-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .chain-flow span {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #fffdf8;
+      border: 1px solid rgba(22, 63, 61, 0.1);
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 1080px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .summary-grid,
+      .phase-grid,
+      .project-grid,
+      .pitfall-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .step-grid,
+      .command-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        padding: 14px 12px 34px;
+      }
+
+      .hero,
+      .panel,
+      .phase-section {
+        padding: 20px;
+      }
+
+      .summary-grid,
+      .phase-grid,
+      .project-grid,
+      .pitfall-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head,
+      .phase-title {
+        flex-direction: column;
+        align-items: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">从 Ubuntu 终端出发，只学 Linux 应用层</div>
+          <h1>嵌入式 Linux 应用开发学习路线</h1>
+          <p>这份路线默认你已经完成 Ubuntu 安装并能打开终端，现在直接从“会用 Linux + 会写 C 程序”开始，最终走到“交叉编译 ARM 程序 + 传到开发板 + 运行控制 LED、按键、串口、网络”。整条路线只关注应用层，不碰内核驱动、不学裸机，强调每天 2 到 3 小时、4 到 6 周、全程实操优先。</p>
+          <div class="hero-chain">
+            <span>Ubuntu 熟练操作</span>
+            <span>C 与 Makefile</span>
+            <span>交叉编译</span>
+            <span>NFS / SCP 传输</span>
+            <span>设备文件编程</span>
+            <span>上板运行</span>
+          </div>
+        </div>
+        <div class="hero-points">
+          <div class="hero-card">
+            <strong>起点</strong>
+            <span>你已经打开 Ubuntu，可以直接进入命令行训练和 C 编程</span>
+          </div>
+          <div class="hero-card">
+            <strong>终点</strong>
+            <span>独立完成“写程序 → 交叉编译 → 下载开发板 → 控制硬件”</span>
+          </div>
+          <div class="hero-card">
+            <strong>原则</strong>
+            <span>先会跑通流程，再逐步理解细节，不被内核和底层驱动分散注意力</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="toc">
+        <h2>路线导航</h2>
+        <p>建议先完整浏览，再按顺序实操，不跳阶段。</p>
+        <nav>
+          <a href="#overview">学习总览</a>
+          <a href="#phase-map">六阶段地图</a>
+          <a href="#command-cheatsheet">终端指令示例大全</a>
+          <a href="#phase-0">阶段 0：环境起步</a>
+          <a href="#phase-1">阶段 1：Linux 基础</a>
+          <a href="#phase-2">阶段 2：C 与 Makefile</a>
+          <a href="#phase-3">阶段 3：交叉编译</a>
+          <a href="#phase-4">阶段 4：开发板部署</a>
+          <a href="#phase-5">阶段 5：应用层编程</a>
+          <a href="#phase-6">阶段 6：终极实战</a>
+          <a href="#pitfalls">避坑重点</a>
+          <a href="#chain">极简链路</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="panel" id="overview">
+          <div class="section-head">
+            <div>
+              <h2>学习总览</h2>
+              <p>目标不是成为 Linux 理论专家，而是把一条真实的嵌入式应用开发链路完整跑通。你只要把下面每个阶段都敲过、改过、跑过，后面再看资料就会非常快。</p>
+            </div>
+          </div>
+          <div class="summary-grid">
+            <article class="summary-card">
+              <strong>总周期</strong>
+              <span>4 到 6 周，每天 2 到 3 小时，周末可用来补实操。</span>
+            </article>
+            <article class="summary-card">
+              <strong>主语言</strong>
+              <span>C 语言为主，Linux 命令行为主，Makefile 必须会写。</span>
+            </article>
+            <article class="summary-card">
+              <strong>开发环境</strong>
+              <span>Ubuntu 20.04 / 22.04，开发板用商家现成 Linux 镜像。</span>
+            </article>
+            <article class="summary-card">
+              <strong>最后成果</strong>
+              <span>至少完成 LED、按键、串口 3 个上板小项目。</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="phase-map">
+          <div class="section-head">
+            <div>
+              <h2>六阶段地图</h2>
+              <p>先在 PC 端把 Linux 和 C 写顺，再切换到 ARM 交叉编译，最后把程序传到开发板。每一段都要有产出，不要只看不敲。</p>
+            </div>
+          </div>
+          <div class="phase-grid">
+            <article class="phase-card">
+              <span class="tag">阶段 0</span>
+              <h3>环境起步</h3>
+              <p>在 Ubuntu 建好学习目录，装好编译与调试工具，确认系统状态正常。</p>
+            </article>
+            <article class="phase-card">
+              <span class="tag">阶段 1</span>
+              <h3>Linux 基础</h3>
+              <p>熟练命令、目录、权限、网络、Vim、gcc，脱离 Windows 操作习惯。</p>
+            </article>
+            <article class="phase-card">
+              <span class="tag">阶段 2</span>
+              <h3>C 与 Makefile</h3>
+              <p>掌握嵌入式够用的 C 语法、文件 IO、系统调用、多文件工程和 Makefile。</p>
+            </article>
+            <article class="phase-card">
+              <span class="tag">阶段 3</span>
+              <h3>交叉编译</h3>
+              <p>理解 x86 和 ARM 的差别，配置交叉编译器并生成 ARM 可执行文件。</p>
+            </article>
+            <article class="phase-card">
+              <span class="tag">阶段 4</span>
+              <h3>开发板部署</h3>
+              <p>烧录镜像、串口登录、配置网络、打通 NFS 或 SCP 文件传输。</p>
+            </article>
+            <article class="phase-card">
+              <span class="tag">阶段 5-6</span>
+              <h3>应用编程与实战</h3>
+              <p>围绕 /dev/xxx 进行设备编程，并完成 LED、按键、串口三个完整项目。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="command-cheatsheet">
+          <div class="section-head">
+            <div>
+              <h2>Linux 终端指令示例大全</h2>
+              <p>这一节可以当作你在 Ubuntu 学习期间的随手查询区。每组命令都配了“文字说明 + 具体使用场景 + 示例写法”，不只是告诉你命令名，而是告诉你什么时候该想到它。</p>
+            </div>
+          </div>
+          <div class="command-grid">
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">目录与定位</span>
+                <h3>先搞清楚自己在哪里</h3>
+                <p class="command-intro">你每天打开终端后的第一件事，通常不是马上编译，而是确认当前目录、切换到项目目录、看看里面有什么。</p>
+                <div class="command-entry">
+                  <strong><code>pwd</code></strong>
+                  <p>显示当前所在目录的完整路径，避免你在错误位置创建文件或执行命令。</p>
+                  <p class="command-scene">使用场景：你刚打开终端，或者切换了很多次目录，不确定现在到底在哪。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>ls</code> / <code>ls -l</code> / <code>ls -a</code></strong>
+                  <p>查看当前目录内容；<code>-l</code> 看详细信息；<code>-a</code> 包含隐藏文件。</p>
+                  <p class="command-scene">使用场景：查看当前工程里有哪些源码、脚本、Makefile，或者确认隐藏配置文件是否存在。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>cd</code></strong>
+                  <p>切换目录，配合相对路径和绝对路径使用，是最常用的移动方式。</p>
+                  <p class="command-scene">使用场景：从家目录切到项目目录、从源码目录切到交叉编译目录、从一个阶段切到另一个阶段。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>pwd
+ls
+ls -l
+ls -a
+cd ~/linux_app_learning
+cd 03_cross
+cd ..
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">创建与整理</span>
+                <h3>新建目录、复制文件、重命名文件</h3>
+                <p class="command-intro">做嵌入式开发时，你会频繁创建项目目录、复制模板、重命名源码和备份版本，这一组命令用得非常密集。</p>
+                <div class="command-entry">
+                  <strong><code>mkdir</code> / <code>mkdir -p</code></strong>
+                  <p>创建目录；<code>-p</code> 可以一次创建多层目录，不会因为父目录不存在而失败。</p>
+                  <p class="command-scene">使用场景：建立阶段目录、项目目录、共享目录或者按模块拆分源码目录。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>cp</code> / <code>cp -r</code></strong>
+                  <p>复制文件或目录；复制目录时需要加 <code>-r</code>。</p>
+                  <p class="command-scene">使用场景：复制 LED 项目模板，快速得到按键项目模板；备份 Makefile 旧版本。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>mv</code></strong>
+                  <p>移动文件，也常用于重命名文件或目录。</p>
+                  <p class="command-scene">使用场景：把 <code>hello.c</code> 改成 <code>led.c</code>，或者把编译结果移动到单独输出目录。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>mkdir led_project
+mkdir -p 06_projects/{led,key,uart}
+cp hello.c led.c
+cp -r led key_backup
+mv hello.c hello_old.c
+mv key_backup 06_projects/
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">删除与清理</span>
+                <h3>删除文件前先确认目标</h3>
+                <p class="command-intro">Linux 下删除通常没有“回收站”可救，所以这组命令一定要慢一点、确认后再执行。</p>
+                <div class="command-entry">
+                  <strong><code>rm</code></strong>
+                  <p>删除单个文件，适合清理临时输出、旧日志、错误生成物。</p>
+                  <p class="command-scene">使用场景：删掉多余的可执行文件、测试日志或临时文本。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>rm -r</code> / <code>rm -rf</code></strong>
+                  <p>递归删除目录；<code>-f</code> 表示强制执行，危险性更高。</p>
+                  <p class="command-scene">使用场景：清理整个测试目录、删除错误创建的工程副本。执行前最好先用 <code>pwd</code> 和 <code>ls</code> 确认位置。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>clear</code></strong>
+                  <p>清空当前终端屏幕，不影响文件和程序，只是让输出更清爽。</p>
+                  <p class="command-scene">使用场景：前面输出太多，想把当前编译或运行结果看得更清楚。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>rm hello
+rm data.txt
+rm -r old_demo
+rm -rf build
+clear
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">查看文件内容</span>
+                <h3>快速看配置、源码、日志</h3>
+                <p class="command-intro">你不可能每次都用编辑器打开文件。很多时候只是快速看头几行、尾几行、或者整份小文件内容。</p>
+                <div class="command-entry">
+                  <strong><code>cat</code></strong>
+                  <p>直接输出整个文件内容，适合小文件，例如配置片段、简单源码、日志结果。</p>
+                  <p class="command-scene">使用场景：看 Makefile、看一行配置、确认某个文本文件已写入成功。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>head</code> / <code>tail</code></strong>
+                  <p>分别查看文件开头和结尾内容，适合大日志或长文件。</p>
+                  <p class="command-scene">使用场景：查看启动日志开头、查看程序报错最后几行、查看内核打印最新内容。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>less</code></strong>
+                  <p>分页查看大文件，可上下翻页搜索，比直接 <code>cat</code> 更适合长文本。</p>
+                  <p class="command-scene">使用场景：看长篇日志、厂商脚本文本、很长的配置文件。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cat Makefile
+head -n 20 /etc/hosts
+tail -n 30 build.log
+less /var/log/syslog
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">查找与过滤</span>
+                <h3>找文件、找关键字、定位报错</h3>
+                <p class="command-intro">嵌入式开发里最怕的不是报错，而是找不到报错出现在哪。学会查找，你定位问题的速度会快很多。</p>
+                <div class="command-entry">
+                  <strong><code>find</code></strong>
+                  <p>按文件名、路径、类型等条件查找文件。</p>
+                  <p class="command-scene">使用场景：找某个源码文件、找交叉编译器位置、找系统里的串口相关设备。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>grep</code> / <code>grep -n</code></strong>
+                  <p>在文件中查找关键字；<code>-n</code> 会显示行号，方便回到源码定位。</p>
+                  <p class="command-scene">使用场景：搜索报错信息、搜索函数名、搜索配置项、搜索日志中的关键词。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>|</code> 管道</strong>
+                  <p>把前一个命令的输出交给后一个命令继续处理，是 Linux 命令组合的核心思想。</p>
+                  <p class="command-scene">使用场景：输出太多时先列出来，再用过滤命令缩小范围。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>find ~/linux_app_learning -name "*.c"
+find /dev -name "tty*"
+grep -n "main" hello.c
+grep -n "error" build.log
+ls /dev | grep tty
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">权限管理</span>
+                <h3>程序不能运行时先看权限</h3>
+                <p class="command-intro">很多“程序打不开”“脚本运行不了”“设备文件没法访问”的问题，第一反应就应该检查权限。</p>
+                <div class="command-entry">
+                  <strong><code>chmod</code></strong>
+                  <p>修改文件权限，最常见的是给脚本或程序增加执行权限。</p>
+                  <p class="command-scene">使用场景：交叉编译后的程序传到开发板后，执行前需要 <code>chmod +x</code>。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>ls -l</code></strong>
+                  <p>查看文件详细权限、属主、大小和时间信息，是权限排查的起点。</p>
+                  <p class="command-scene">使用场景：确认当前文件是否可执行、当前用户是否具备读写权限。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>sudo</code></strong>
+                  <p>以管理员权限运行命令，用于安装软件、修改系统配置、重启服务等操作。</p>
+                  <p class="command-scene">使用场景：安装 NFS、编辑 <code>/etc/exports</code>、挂载系统级目录、查看受限日志。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>ls -l led_demo
+chmod +x led_demo
+chmod 755 run.sh
+sudo apt update
+sudo vim /etc/exports
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">压缩与解压</span>
+                <h3>处理工具链、资料包、备份包</h3>
+                <p class="command-intro">厂商资料、交叉编译器、示例工程经常是压缩包。不会解压就没法继续下一步。</p>
+                <div class="command-entry">
+                  <strong><code>tar -xzvf</code></strong>
+                  <p>解压 <code>.tar.gz</code> 压缩包，是 Linux 下最常见的解压方式之一。</p>
+                  <p class="command-scene">使用场景：解压交叉编译器、板卡资料包、示例工程代码包。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>tar -czvf</code></strong>
+                  <p>把目录或文件打包压缩，方便备份、分享或上传。</p>
+                  <p class="command-scene">使用场景：把当前工程打包给同学、备份一个稳定可用版本。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>unzip</code></strong>
+                  <p>用于解压 <code>.zip</code> 格式文件，一些 Windows 环境导出的资料常会用到。</p>
+                  <p class="command-scene">使用场景：下载到的厂商资料是 zip 包时，先解压再进入目录查看。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>tar -xzvf toolchain.tar.gz
+tar -xvf rootfs.tar.xz
+tar -czvf led_project_backup.tar.gz led_project
+unzip vendor_docs.zip
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">编译与运行</span>
+                <h3>写完代码后最常用的一组命令</h3>
+                <p class="command-intro">从 hello.c 到 LED 项目，核心动作始终是“编译、执行、确认输出”，只是编译器从 gcc 换成了交叉编译器。</p>
+                <div class="command-entry">
+                  <strong><code>gcc</code></strong>
+                  <p>在 PC 上编译 x86 程序，适合前期练习 C 语言和 Linux 文件 IO。</p>
+                  <p class="command-scene">使用场景：先在 Ubuntu 本机验证逻辑是否正确，再切换到 ARM 编译。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>make</code></strong>
+                  <p>读取 Makefile 自动完成编译，适合多文件工程和重复构建。</p>
+                  <p class="command-scene">使用场景：项目包含多个源文件时，用一条命令完成所有编译和链接。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>file</code></strong>
+                  <p>查看文件类型，能快速确认可执行文件到底是 x86 还是 ARM 架构。</p>
+                  <p class="command-scene">使用场景：程序在开发板上运行失败时，先确认是否编错架构。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>gcc hello.c -o hello
+./hello
+make
+make clean
+file hello
+file led_demo
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">进程与运行状态</span>
+                <h3>程序卡住、占用高、后台没退出时用它们</h3>
+                <p class="command-intro">你的程序跑起来以后，也要知道它是否真的在运行、是否占 CPU、是否需要手动结束。</p>
+                <div class="command-entry">
+                  <strong><code>ps</code> / <code>ps aux</code></strong>
+                  <p>查看当前系统进程信息，确认程序是否启动成功。</p>
+                  <p class="command-scene">使用场景：串口程序跑在后台后，确认它还在不在；查看 ssh、nfs 服务是否运行。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>top</code></strong>
+                  <p>实时查看系统资源占用，包括 CPU、内存和进程变化。</p>
+                  <p class="command-scene">使用场景：程序进入死循环导致 CPU 很高，或者你想观察系统负载。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>kill</code> / <code>kill -9</code></strong>
+                  <p>结束指定进程；<code>-9</code> 表示强制终止，通常在程序无响应时使用。</p>
+                  <p class="command-scene">使用场景：测试程序没写退出条件，终端被占住或者后台进程一直不结束。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>ps aux | grep led_demo
+ps aux | grep ssh
+top
+kill 12345
+kill -9 12345
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">网络与远程登录</span>
+                <h3>开发板互联必须会的命令</h3>
+                <p class="command-intro">只要进入开发板阶段，这组命令的使用频率会非常高。能否顺利传文件、远程登录，取决于你是否熟练它们。</p>
+                <div class="command-entry">
+                  <strong><code>ip a</code></strong>
+                  <p>查看网卡和 IP 地址，判断 Ubuntu 和开发板是否处在同一网段。</p>
+                  <p class="command-scene">使用场景：配置虚拟机网络后，先确认本机地址；开发板连网后确认拿到的地址。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>ping</code></strong>
+                  <p>测试网络是否可达，是最基础的连通性检查手段。</p>
+                  <p class="command-scene">使用场景：Ubuntu 访问开发板前，先 ping 一下；开发板访问 Ubuntu 做 NFS 挂载前也先测试。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>ssh</code></strong>
+                  <p>远程登录另一台 Linux 设备，进入 shell 直接执行命令。</p>
+                  <p class="command-scene">使用场景：不用串口也能管理开发板，适合网络已经打通后的日常开发。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>scp</code></strong>
+                  <p>通过 SSH 安全复制文件，是最常用的上板传程序方式之一。</p>
+                  <p class="command-scene">使用场景：把交叉编译好的可执行文件传到开发板的 <code>/root</code> 或指定目录。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>ip a
+ping -c 4 192.168.1.100
+ssh root@192.168.1.100
+scp led_demo root@192.168.1.100:/root/
+scp -r 06_projects root@192.168.1.100:/root/
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">系统信息与设备</span>
+                <h3>确认架构、内核、设备节点</h3>
+                <p class="command-intro">嵌入式开发经常需要先确认系统到底是什么架构、内核版本是什么、设备文件是否存在，然后才好判断编译和运行问题。</p>
+                <div class="command-entry">
+                  <strong><code>uname -a</code></strong>
+                  <p>查看内核和架构信息，是判断系统身份的最快方法之一。</p>
+                  <p class="command-scene">使用场景：确认当前是 Ubuntu 主机还是开发板，确认板子是不是 ARM 架构。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>dmesg</code></strong>
+                  <p>查看内核启动和设备日志，对串口识别、USB 转串口接入、驱动报错很有帮助。</p>
+                  <p class="command-scene">使用场景：插入 USB 转 TTL 后想确认系统分配了哪个 <code>/dev/ttyUSB*</code>。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>ls /dev</code></strong>
+                  <p>查看设备节点目录内容，是找 LED、按键、串口设备名的基础动作。</p>
+                  <p class="command-scene">使用场景：代码里要操作 <code>/dev/led0</code> 或 <code>/dev/ttyS1</code> 之前，先确认它真的存在。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>uname -a
+dmesg | tail
+ls /dev
+ls /dev/tty*
+ls /dev/led*
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">软件安装与服务</span>
+                <h3>安装工具和重启系统服务</h3>
+                <p class="command-intro">当你需要安装交叉编译辅助工具、网络工具或者 NFS 服务时，这组命令会直接用到。</p>
+                <div class="command-entry">
+                  <strong><code>apt update</code> / <code>apt install</code></strong>
+                  <p>更新软件包索引并安装软件，是 Ubuntu 最基础的软件管理方式。</p>
+                  <p class="command-scene">使用场景：安装 <code>build-essential</code>、<code>vim</code>、<code>nfs-kernel-server</code>、<code>minicom</code>。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>systemctl status</code></strong>
+                  <p>查看服务状态，确认服务是否运行正常。</p>
+                  <p class="command-scene">使用场景：NFS 配好后，检查服务有没有成功启动。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>systemctl restart</code></strong>
+                  <p>重新启动服务，让配置修改立即生效。</p>
+                  <p class="command-scene">使用场景：修改了 <code>/etc/exports</code> 后，重启 NFS 服务加载新配置。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>sudo apt update
+sudo apt install -y build-essential vim minicom nfs-kernel-server
+sudo systemctl status nfs-kernel-server
+sudo systemctl restart nfs-kernel-server
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">重定向与日志</span>
+                <h3>保存输出、追加日志、临时记录结果</h3>
+                <p class="command-intro">编译输出、程序运行信息、错误日志最好留痕，这样你回头排查问题时会轻松很多。</p>
+                <div class="command-entry">
+                  <strong><code>&gt;</code></strong>
+                  <p>把命令输出写入文件，如果文件已存在会覆盖原内容。</p>
+                  <p class="command-scene">使用场景：保存一次编译输出，或者把目录清单导出成文本。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>&gt;&gt;</code></strong>
+                  <p>追加输出到文件末尾，不会覆盖原内容。</p>
+                  <p class="command-scene">使用场景：持续记录实验日志、测试结果、运行过程中的提示信息。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>2&gt;</code></strong>
+                  <p>单独重定向错误输出，便于把错误信息保存到专门文件。</p>
+                  <p class="command-scene">使用场景：编译失败时把错误信息单独收集出来，后续分析更方便。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>ls -l &gt; file_list.txt
+echo "test begin" &gt;&gt; run.log
+make &gt; build.log 2&gt; build_error.log
+./led_demo 1 &gt;&gt; run.log
+</code></pre>
+              </div>
+            </article>
+
+            <article class="command-card">
+              <div class="command-body">
+                <span class="mini-tag">帮助与自查</span>
+                <h3>忘了参数时不要硬背，先查</h3>
+                <p class="command-intro">Linux 命令很多，不需要一次性把所有参数都背下来。更重要的是形成“忘了就立刻查”的习惯。</p>
+                <div class="command-entry">
+                  <strong><code>man</code></strong>
+                  <p>查看命令手册，是最标准的帮助入口。</p>
+                  <p class="command-scene">使用场景：不确定 <code>tar</code>、<code>grep</code>、<code>chmod</code> 某个参数是什么意思时。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>--help</code></strong>
+                  <p>很多命令支持快速帮助参数，比完整手册更适合临时查基础写法。</p>
+                  <p class="command-scene">使用场景：只想快速看常用参数，不想翻很长的 man 手册。</p>
+                </div>
+                <div class="command-entry">
+                  <strong><code>history</code></strong>
+                  <p>查看你之前输入过的命令，适合回忆某条好用但忘记了的指令。</p>
+                  <p class="command-scene">使用场景：昨天成功挂载过 NFS，今天忘了具体命令，可以先从历史记录里翻。</p>
+                </div>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>man grep
+tar --help
+chmod --help
+history
+history | grep scp
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-0">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 0 · 0.5 天</span>
+              <h2>从“已打开 Ubuntu”正式起步</h2>
+              <p>你已经进入 Ubuntu，所以这里不再讲安装系统，而是先把学习目录和基础工具准备好。这个阶段完成后，后面所有代码、命令、Makefile 都会有统一位置，避免学习过程越来越乱。</p>
+              <div class="phase-meta">阶段目标：建好工作目录，装好基础工具，确认 gcc、vim、ssh、file 等常用命令可用。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 0.1</span>
+                <h3>建立统一学习目录</h3>
+                <p>把每一阶段代码分开存放，后续交叉编译、上传开发板、NFS 共享都会更清晰。</p>
+                <p class="goal">建议产出：得到一个固定的学习工作区。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>mkdir -p ~/linux_app_learning/{00_env,01_linux,02_c_makefile,03_cross,04_board,05_app,06_projects}
+cd ~/linux_app_learning
+pwd
+tree -L 1
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 0.2</span>
+                <h3>安装基础工具包</h3>
+                <p>这些工具足够覆盖前 4 周的大部分需求，包括编译、编辑、网络调试、串口调试、NFS 配置和查看文件架构。</p>
+                <p class="goal">建议产出：Ubuntu 具备编译和基础调试能力。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>sudo apt update
+sudo apt install -y build-essential vim git file tree net-tools openssh-client openssh-server \
+minicom nfs-kernel-server nfs-common
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 0.3</span>
+                <h3>确认系统状态正常</h3>
+                <p>先确认你当前 Ubuntu 版本、内核和编译器是否正常，后面出问题时也方便定位。</p>
+                <p class="goal">建议产出：掌握最基础的环境自检习惯。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>whoami
+uname -a
+lsb_release -a
+gcc --version
+vim --version | head
+ssh -V
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 0.4</span>
+                <h3>记录你的开发板信息模板</h3>
+                <p>交叉编译器、设备节点、串口号、IP 地址、用户名这些信息后面会反复用到，最好一开始就准备一个文本记录。</p>
+                <p class="goal">建议产出：固定记录板卡关键参数。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">txt</div>
+<pre><code>开发板型号：
+CPU 架构：32 位 ARM / 64 位 ARM
+串口设备：/dev/ttyUSB0
+串口波特率：115200
+开发板 IP：
+Ubuntu IP：
+开发板用户名：
+开发板密码：
+LED 设备节点：/dev/led0
+按键设备节点：/dev/key0
+串口设备节点：/dev/ttyS1 或 /dev/ttymxc1
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-1">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 1 · 第 1~2 周</span>
+              <h2>PC 端 Linux 基础必须练熟</h2>
+              <p>这一阶段最重要的不是“知道命令是什么”，而是让终端操作变成下意识动作。只要你能顺手建目录、找文件、改权限、写 hello.c、编译运行，后面的节奏就会非常顺。</p>
+              <div class="phase-meta">阶段目标：脱离 Windows 习惯，能在 Ubuntu 终端里高频完成查找、编辑、编译、运行。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 1.1</span>
+                <h3>练熟目录与文件命令</h3>
+                <p>这一组命令是所有后续工作的基本动作。建议自己新建一个练习目录，反复敲 3 遍以上。</p>
+                <p class="goal">重点命令：<code>ls</code>、<code>cd</code>、<code>pwd</code>、<code>mkdir</code>、<code>cp</code>、<code>mv</code>、<code>rm</code>、<code>find</code>、<code>grep</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/01_linux
+mkdir demo_dir
+cd demo_dir
+touch a.txt b.txt
+ls -l
+cp a.txt a_copy.txt
+mv b.txt notes.txt
+find . -name "*.txt"
+grep -n "hello" *.txt
+cd ..
+rm -rf demo_dir
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 1.2</span>
+                <h3>理解 Linux 目录结构</h3>
+                <p>你不用把每个目录都背成百科全书，但一定要知道程序、配置、设备文件分别放哪里。后续找串口、找设备节点、找配置文件都会用到。</p>
+                <p class="goal">重点理解：<code>/dev</code>、<code>/etc</code>、<code>/home</code>、<code>/usr</code>、<code>/bin</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>ls /
+ls /dev | head
+ls /etc | head
+ls /usr/bin | head
+echo "当前用户目录: $HOME"
+cd /dev
+pwd
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 1.3</span>
+                <h3>学会权限、进程、网络查看</h3>
+                <p>以后程序不能执行、串口打不开、网络连不上，十有八九要回到权限、进程、IP 这些基础检查。</p>
+                <p class="goal">重点命令：<code>chmod</code>、<code>ps</code>、<code>top</code>、<code>ip</code>、<code>ping</code>、<code>ssh</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/01_linux
+echo "test" &gt; run.sh
+chmod +x run.sh
+ls -l run.sh
+ps aux | head
+top
+ip a
+ping -c 4 8.8.8.8
+ssh user@192.168.1.100
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 1.4</span>
+                <h3>会用 Vim 新建、编辑、保存、退出</h3>
+                <p>不用追求成为 Vim 高手，但一定要会进入插入模式、保存退出和快速复制粘贴。因为很多开发板环境只有它最好用。</p>
+                <p class="goal">记住这几个动作：<code>i</code>、<code>Esc</code>、<code>:w</code>、<code>:q</code>、<code>:wq</code>、<code>:q!</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>cd ~/linux_app_learning/01_linux
+vim hello.c
+
+# 进入 Vim 后按 i，输入下面代码
+# 输入完按 Esc，再输入 :wq 保存退出
+
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    printf("Hello Linux\\n");
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 1.5</span>
+                <h3>完成第一个 gcc 编译与运行</h3>
+                <p>这一步的目的很简单：你要亲手体验“写代码 → 编译 → 运行 → 看到输出”这条最小闭环。</p>
+                <p class="goal">建议重复至少 3 次，改一改输出内容再编译。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/01_linux
+gcc hello.c -o hello
+./hello
+file hello
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 1.6</span>
+                <h3>练习压缩、解压与权限修正</h3>
+                <p>厂商资料、工具链、示例工程通常都是压缩包。你必须熟练解压、进入目录、赋予执行权限。</p>
+                <p class="goal">这一步对后面的交叉编译器安装非常关键。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/01_linux
+mkdir tar_demo
+echo "demo" &gt; tar_demo/readme.txt
+tar -czvf tar_demo.tar.gz tar_demo
+rm -rf tar_demo
+tar -xzvf tar_demo.tar.gz
+chmod -R 755 tar_demo
+ls -l tar_demo
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-2">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 2 · 第 2~3 周</span>
+              <h2>嵌入式够用的 C 语言和 Makefile</h2>
+              <p>这里不要掉进“把 C 所有知识点都学完再继续”的陷阱。你只需要把后面做应用程序一定会用到的几类能力练熟：指针、结构体、文件 IO、系统调用、多文件工程、Makefile。</p>
+              <div class="phase-meta">阶段目标：能独立写一个稍微像样的 C 程序，并用 Makefile 一键编译。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 2.1</span>
+                <h3>先练指针和结构体</h3>
+                <p>设备编程和串口编程里经常会看到结构体和指针。先通过一个小程序把这两个概念用起来，不必追求复杂。</p>
+                <p class="goal">关键点：能看懂取地址、解引用、结构体成员访问。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;stdio.h&gt;
+
+struct DeviceInfo {
+    char name[32];
+    int id;
+};
+
+int main(void)
+{
+    int led_state = 1;
+    int *p = &amp;led_state;
+    struct DeviceInfo dev = {"led0", 100};
+
+    printf("led_state = %d\\n", led_state);
+    printf("*p = %d\\n", *p);
+    printf("device = %s, id = %d\\n", dev.name, dev.id);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 2.2</span>
+                <h3>掌握标准 IO 和 Linux 文件 IO</h3>
+                <p>后面控制设备的核心思想就是“设备也是文件”。所以你一定要会 <code>open</code>、<code>read</code>、<code>write</code>、<code>close</code>。</p>
+                <p class="goal">先在 PC 上操作普通文本文件，理解调用方式。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int fd;
+    char buf[64] = {0};
+    const char *msg = "hello file io\\n";
+
+    fd = open("data.txt", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    write(fd, msg, strlen(msg));
+    lseek(fd, 0, SEEK_SET);
+    read(fd, buf, sizeof(buf) - 1);
+    printf("read from file: %s", buf);
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 2.3</span>
+                <h3>对比 stdio 与系统调用 IO</h3>
+                <p>应用开发里两种方式都会遇到。普通文本和日志常用 <code>fopen</code>，设备节点和串口通常更接近系统调用风格。</p>
+                <p class="goal">形成直觉：设备文件优先想 <code>open/read/write</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;stdio.h&gt;
+
+int main(void)
+{
+    FILE *fp = fopen("note.txt", "w+");
+    char buf[64] = {0};
+
+    if (fp == NULL) {
+        perror("fopen");
+        return 1;
+    }
+
+    fprintf(fp, "stdio demo\\n");
+    rewind(fp);
+    fgets(buf, sizeof(buf), fp);
+    printf("buf = %s", buf);
+    fclose(fp);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 2.4</span>
+                <h3>把程序拆成多文件</h3>
+                <p>很多初学者一直把所有代码写在一个 <code>.c</code> 里，后面一上板就开始混乱。现在就练习拆分头文件和源文件。</p>
+                <p class="goal">建议结构：<code>main.c</code>、<code>file_ops.c</code>、<code>file_ops.h</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>/* file_ops.h */
+#ifndef FILE_OPS_H
+#define FILE_OPS_H
+int write_text(const char *filename, const char *text);
+#endif
+
+/* file_ops.c */
+#include "file_ops.h"
+#include &lt;fcntl.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+
+int write_text(const char *filename, const char *text)
+{
+    int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    if (fd &lt; 0) return -1;
+    write(fd, text, strlen(text));
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 2.5</span>
+                <h3>手写第一个 Makefile</h3>
+                <p>Makefile 是嵌入式开发的重中之重。你以后切换交叉编译器、加源文件、改头文件，都会靠它统一管理。</p>
+                <p class="goal">做到一条 <code>make</code> 命令编译成功，一条 <code>make clean</code> 清理干净。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">makefile</div>
+<pre><code>CC = gcc
+CFLAGS = -Wall -g
+TARGET = file_demo
+OBJS = main.o file_ops.o
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+main.o: main.c file_ops.h
+	$(CC) $(CFLAGS) -c main.c
+
+file_ops.o: file_ops.c file_ops.h
+	$(CC) $(CFLAGS) -c file_ops.c
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 2.6</span>
+                <h3>跑通一个多文件工程</h3>
+                <p>写 Makefile 不是为了“看起来正规”，而是为了让工程可以反复编译、修改、扩展。这里要把目录结构也练起来。</p>
+                <p class="goal">产出：一个能通过 <code>make</code> 构建的 PC 端工程。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/02_c_makefile
+mkdir file_demo
+cd file_demo
+vim main.c
+vim file_ops.c
+vim file_ops.h
+vim Makefile
+make
+./file_demo
+make clean
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-3">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 3 · 第 3~4 周</span>
+              <h2>交叉编译环境搭建</h2>
+              <p>这是第一次真正碰到“PC 能跑，板子不一定能跑”的差异。你必须理解 x86 和 ARM 的架构区别，但不用自己编内核和工具链，直接使用开发板商家提供的交叉编译器就够了。</p>
+              <div class="phase-meta">阶段目标：会配置交叉编译器、会验证版本、会产出 ARM 架构可执行程序。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 3.1</span>
+                <h3>解压并放置交叉编译器</h3>
+                <p>通常厂商会给你一个压缩包。解压到一个固定目录，比如 <code>/opt/toolchains</code> 或你的家目录下。</p>
+                <p class="goal">32 位常见编译器：<code>arm-linux-gnueabihf-gcc</code>；64 位常见编译器：<code>aarch64-linux-gnu-gcc</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/03_cross
+mkdir -p toolchains
+cp ~/Downloads/your_toolchain.tar.xz .
+tar -xvf your_toolchain.tar.xz -C toolchains
+ls toolchains
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 3.2</span>
+                <h3>配置环境变量 PATH</h3>
+                <p>只有把交叉编译器的 <code>bin</code> 目录加到 PATH，终端里才能直接调用它。建议写入 <code>~/.bashrc</code>。</p>
+                <p class="goal">做到重新打开终端后依然生效。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>vim ~/.bashrc
+
+# 在文件末尾追加一行，路径按你的工具链实际位置修改
+export PATH=$PATH:/home/yourname/linux_app_learning/03_cross/toolchains/gcc-arm/bin
+
+source ~/.bashrc
+arm-linux-gnueabihf-gcc -v
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 3.3</span>
+                <h3>交叉编译第一个 hello 程序</h3>
+                <p>这一步就是验证工具链是否真能工作。生成的 ARM 程序不能在你的 x86 Ubuntu 上直接运行，这是正常现象。</p>
+                <p class="goal">核心体验：同一个源码，换编译器就能输出不同架构的程序。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/03_cross
+cp ~/linux_app_learning/01_linux/hello.c .
+arm-linux-gnueabihf-gcc hello.c -o hello_arm
+file hello_arm
+
+# 如果是 64 位 ARM，命令可能是
+# aarch64-linux-gnu-gcc hello.c -o hello_arm
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 3.4</span>
+                <h3>把 Makefile 切换为交叉编译版本</h3>
+                <p>今后所有项目都建议通过修改 <code>CC</code> 变量切换架构，而不是手工一条条敲编译命令。</p>
+                <p class="goal">你要学会让同一份源码同时支持 PC 本地调试和 ARM 上板编译。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">makefile</div>
+<pre><code>CC = arm-linux-gnueabihf-gcc
+CFLAGS = -Wall -g
+TARGET = hello_arm
+OBJS = hello.o
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+hello.o: hello.c
+	$(CC) $(CFLAGS) -c hello.c
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-4">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 4 · 2~3 天</span>
+              <h2>开发板 Linux 系统部署与互联</h2>
+              <p>这里的目标不是研究启动原理，而是把开发板快速带到“能登录 Linux、能联网、能传文件”的状态。商家给现成镜像时，一定优先使用，先把应用开发流程跑通最重要。</p>
+              <div class="phase-meta">阶段目标：开发板能正常启动并进入 Linux，Ubuntu 能通过串口、SSH、NFS 或 SCP 跟它协作。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 4.1</span>
+                <h3>烧录并串口登录开发板</h3>
+                <p>烧录方式跟板卡有关，直接照厂商文档操作即可。关键结果是上电后你能通过串口看到启动日志并进入 shell。</p>
+                <p class="goal">Ubuntu 下可以用 <code>minicom</code> 或 <code>screen</code> 替代 Windows 串口工具。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>dmesg | tail
+ls /dev/ttyUSB*
+sudo minicom -D /dev/ttyUSB0 -b 115200
+
+# 如果你更喜欢 screen，也可以
+# sudo screen /dev/ttyUSB0 115200
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 4.2</span>
+                <h3>给开发板配置网络</h3>
+                <p>最简单的方式是让 Ubuntu 和开发板处在同一网段。这样后面就能直接 ssh、scp、nfs 挂载。</p>
+                <p class="goal">你需要知道双方 IP，并能互相 ping 通。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code># Ubuntu 查看本机 IP
+ip a
+
+# 开发板端查看 IP（在板子的 shell 中执行）
+ip a
+ping 192.168.1.10
+
+# Ubuntu 端测试能否 ping 通开发板
+ping 192.168.1.100
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 4.3</span>
+                <h3>先学会 SCP 传文件</h3>
+                <p>SCP 是最容易先跑通的传输方式。只要网络通、ssh 服务开着，就能把程序传过去。</p>
+                <p class="goal">即使以后改用 NFS，SCP 也仍然是必备兜底方案。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/03_cross
+scp hello_arm root@192.168.1.100:/root/
+
+# 首次登录开发板
+ssh root@192.168.1.100
+
+# 在开发板端执行
+chmod +x /root/hello_arm
+/root/hello_arm
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 4.4</span>
+                <h3>再配置 NFS 共享目录</h3>
+                <p>NFS 更适合开发。你的 Ubuntu 目录一改，开发板重新运行程序即可，不用每次手动传文件。</p>
+                <p class="goal">优先推荐把项目目录共享出去，比如 <code>~/linux_app_learning/06_projects</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code># Ubuntu 端配置 NFS
+sudo mkdir -p /nfs_root
+sudo cp -r ~/linux_app_learning/06_projects /nfs_root/
+echo "/nfs_root *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+sudo exportfs -ra
+sudo systemctl restart nfs-kernel-server
+
+# 开发板端挂载
+mkdir -p /mnt/nfs
+mount -t nfs 192.168.1.10:/nfs_root /mnt/nfs
+ls /mnt/nfs
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-5">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 5 · 第 4~5 周</span>
+              <h2>嵌入式 Linux 应用层核心编程</h2>
+              <p>应用层开发的关键理解只有一句话：很多硬件在 Linux 里都会暴露成一个设备文件，所以“操作文件”本质上就是“操作硬件”。你现在要把文件 IO 技能迁移到真实设备节点上。</p>
+              <div class="phase-meta">阶段目标：会围绕 <code>/dev/xxx</code> 写应用程序，能读写设备、能配置串口、能理解简单网络通信。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 5.1</span>
+                <h3>先建立“设备即文件”的直觉</h3>
+                <p>在开发板上先看设备节点，知道 LED、按键、串口这些硬件通常以什么名字出现。名字因板卡不同会略有差异。</p>
+                <p class="goal">先观察，再编程，不要一上来盲写路径。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code># 在开发板端执行
+ls /dev
+ls /dev/led*
+ls /dev/key*
+ls /dev/tty*
+cat /proc/devices | head
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 5.2</span>
+                <h3>用普通文件模拟硬件 IO 逻辑</h3>
+                <p>如果你暂时还没拿到开发板，也可以先在 PC 上用一个普通文件模拟“往设备里写 1 或 0”的动作，把流程练熟。</p>
+                <p class="goal">先练应用逻辑，后换真实设备节点。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int fd = open("fake_led", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    char on = '1';
+    char off = '0';
+
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    write(fd, &amp;on, 1);
+    sleep(1);
+    write(fd, &amp;off, 1);
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 5.3</span>
+                <h3>理解 open / read / write / ioctl 组合</h3>
+                <p>简单设备常常直接 <code>read</code> / <code>write</code> 就够了；复杂设备可能需要 <code>ioctl</code> 做额外控制。你先知道这个层次关系即可。</p>
+                <p class="goal">形成思路：先 <code>open</code>，再根据驱动接口决定 <code>read/write/ioctl</code>。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/ioctl.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int fd = open("/dev/led0", O_RDWR);
+    int cmd = 1;
+
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    write(fd, "1", 1);
+    ioctl(fd, cmd, 0);
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 5.4</span>
+                <h3>学会基本串口编程</h3>
+                <p>串口程序的核心不是“会收发字符”这么简单，而是你要会用 <code>termios</code> 配置波特率、数据位、停止位和校验位。</p>
+                <p class="goal">至少掌握 115200、8N1 这种最常见配置。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;termios.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int fd = open("/dev/ttyS1", O_RDWR | O_NOCTTY);
+    struct termios tty;
+
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    tcgetattr(fd, &amp;tty);
+    cfsetispeed(&amp;tty, B115200);
+    cfsetospeed(&amp;tty, B115200);
+    tty.c_cflag |= (CLOCAL | CREAD);
+    tty.c_cflag &amp;= ~CSIZE;
+    tty.c_cflag |= CS8;
+    tty.c_cflag &amp;= ~PARENB;
+    tty.c_cflag &amp;= ~CSTOPB;
+    tcsetattr(fd, TCSANOW, &amp;tty);
+
+    write(fd, "hello uart\\n", 11);
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 5.5</span>
+                <h3>了解简单线程、定时和网络</h3>
+                <p>这些内容不是现阶段主线，但你至少要知道基础写法，后面做轮询按键、周期采样、TCP 通信时会用到。</p>
+                <p class="goal">会看懂线程创建和 socket 初始化的大体结构。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;arpa/inet.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;unistd.h&gt;
+
+void *worker(void *arg)
+{
+    while (1) {
+        printf("thread running\\n");
+        sleep(1);
+    }
+    return NULL;
+}
+
+int main(void)
+{
+    pthread_t tid;
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    pthread_create(&amp;tid, NULL, worker, NULL);
+    printf("socket fd = %d\\n", sockfd);
+    close(sockfd);
+    pthread_cancel(tid);
+    pthread_join(tid, NULL);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="phase-section" id="phase-6">
+          <div class="phase-title">
+            <div>
+              <span class="phase-badge">阶段 6 · 第 5~6 周</span>
+              <h2>终极实战：程序到开发板完整闭环</h2>
+              <p>这一阶段不要再只做 PC 端练习了，而是必须把“写代码 → 交叉编译 → 传板子 → 授权运行 → 观察结果”完整走通。只要你亲手跑通 3 个小项目，嵌入式 Linux 应用开发的主线就真正建立起来了。</p>
+              <div class="phase-meta">阶段目标：独立完成 LED、按键、串口三个小项目，并形成你自己的最小模板工程。</div>
+            </div>
+          </div>
+          <div class="step-grid">
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 6.1</span>
+                <h3>项目 1：控制板载 LED</h3>
+                <p>这是最适合入门的第一个上板项目。默认设备节点是 <code>/dev/led0</code>，实际路径请以你的开发板资料为准。</p>
+                <p class="goal">结果应为：执行程序后 LED 亮灭有变化。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(int argc, char *argv[])
+{
+    int fd;
+    char value;
+
+    if (argc != 2) {
+        printf("usage: %s &lt;0|1&gt;\\n", argv[0]);
+        return 1;
+    }
+
+    value = argv[1][0];
+    fd = open("/dev/led0", O_RDWR);
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    write(fd, &amp;value, 1);
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 6.2</span>
+                <h3>给 LED 项目配 Makefile 并交叉编译</h3>
+                <p>把编译流程固定下来，以后复制模板改文件名就能继续做别的项目。这里建议直接使用交叉编译器。</p>
+                <p class="goal">结果应为：生成一个 ARM 可执行文件。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">makefile</div>
+<pre><code>CC = arm-linux-gnueabihf-gcc
+CFLAGS = -Wall -g
+TARGET = led_demo
+OBJS = led.o
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+led.o: led.c
+	$(CC) $(CFLAGS) -c led.c
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 6.3</span>
+                <h3>把 LED 程序传到开发板并运行</h3>
+                <p>这一步一定要让自己形成流程肌肉记忆。以后做新程序，基本都是同一套动作。</p>
+                <p class="goal">你应该能明确记住完整链路，而不是靠临时查资料。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">bash</div>
+<pre><code>cd ~/linux_app_learning/06_projects/led
+make
+scp led_demo root@192.168.1.100:/root/
+ssh root@192.168.1.100
+
+# 开发板端执行
+chmod +x /root/led_demo
+/root/led_demo 1
+/root/led_demo 0
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 6.4</span>
+                <h3>项目 2：读取板载按键</h3>
+                <p>按键项目的关键是从 <code>/dev/key0</code> 读取状态，并根据值打印提示。这样你会更直观地理解“读设备文件”的感觉。</p>
+                <p class="goal">结果应为：按下按键时终端出现提示信息。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int fd;
+    char key_value;
+
+    fd = open("/dev/key0", O_RDONLY);
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    while (1) {
+        if (read(fd, &amp;key_value, 1) &gt; 0) {
+            if (key_value == '1') {
+                printf("key pressed\\n");
+            } else {
+                printf("key released\\n");
+            }
+        }
+        usleep(100000);
+    }
+
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 6.5</span>
+                <h3>项目 3：串口收发并回显</h3>
+                <p>第三个项目做完，你就已经不只是“会写个小程序”，而是真正开始具备和外设交互的应用开发能力了。</p>
+                <p class="goal">结果应为：PC 发数据给开发板，开发板接收后再回显回来。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">c</div>
+<pre><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;termios.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int fd;
+    char buf[128];
+    int n;
+    struct termios tty;
+
+    fd = open("/dev/ttyS1", O_RDWR | O_NOCTTY);
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    tcgetattr(fd, &amp;tty);
+    cfsetispeed(&amp;tty, B115200);
+    cfsetospeed(&amp;tty, B115200);
+    tty.c_cflag |= (CLOCAL | CREAD);
+    tty.c_cflag &amp;= ~CSIZE;
+    tty.c_cflag |= CS8;
+    tty.c_cflag &amp;= ~PARENB;
+    tty.c_cflag &amp;= ~CSTOPB;
+    tcsetattr(fd, TCSANOW, &amp;tty);
+
+    while (1) {
+        n = read(fd, buf, sizeof(buf));
+        if (n &gt; 0) {
+            write(fd, buf, n);
+            write(STDOUT_FILENO, buf, n);
+        }
+    }
+
+    close(fd);
+    return 0;
+}
+</code></pre>
+              </div>
+            </article>
+            <article class="step-card">
+              <div class="step-body">
+                <span class="step-index">Step 6.6</span>
+                <h3>整理一个可复用的项目目录模板</h3>
+                <p>做完 3 个项目后，不要让成果散落在各处。把目录、源码、Makefile、上板命令固定下来，后续扩展蜂鸣器、传感器、TCP 服务器时会省很多力气。</p>
+                <p class="goal">建议以后每个新项目都从这个模板复制开始。</p>
+              </div>
+              <div class="code-block">
+                <div class="code-label">txt</div>
+<pre><code>06_projects/
+├── led/
+│   ├── led.c
+│   └── Makefile
+├── key/
+│   ├── key.c
+│   └── Makefile
+└── uart/
+    ├── uart_echo.c
+    └── Makefile
+
+固定流程：
+1. vim xxx.c
+2. make
+3. scp 或 NFS
+4. chmod +x
+5. ./program
+</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>可选进阶方向</h2>
+              <p>等 3 个核心项目跑通之后，再往下扩展就会顺很多。此时再学简单 TCP 服务端、蜂鸣器、传感器读取，学习体验会明显更好。</p>
+            </div>
+          </div>
+          <div class="project-grid">
+            <article class="project-card">
+              <span class="mini-tag">进阶 1</span>
+              <h3>简单 TCP 服务器</h3>
+              <p>开发板监听端口，PC 通过网络连接，发送指令控制 LED 或查询状态。</p>
+            </article>
+            <article class="project-card">
+              <span class="mini-tag">进阶 2</span>
+              <h3>蜂鸣器控制</h3>
+              <p>如果板卡厂商已经提供设备节点，可以沿用 LED 的写法，快速完成蜂鸣器启停。</p>
+            </article>
+            <article class="project-card">
+              <span class="mini-tag">进阶 3</span>
+              <h3>环境传感器读取</h3>
+              <p>通过串口、I2C 工具或已有驱动设备节点读取温湿度等数据，再把结果打印或上传。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="pitfalls">
+          <div class="section-head">
+            <div>
+              <h2>避坑重点</h2>
+              <p>下面这些坑基本是新手最容易在前 2 周和上板初期踩到的。提前记住，能省很多时间。</p>
+            </div>
+          </div>
+          <div class="pitfall-grid">
+            <article class="pitfall-card">
+              <span class="mini-tag">重点 1</span>
+              <h3>不要一开始学内核驱动</h3>
+              <p>你当前目标是做应用层闭环。先把设备节点操作、交叉编译、上板流程做顺，收益远高于一开始啃驱动。</p>
+            </article>
+            <article class="pitfall-card">
+              <span class="mini-tag">重点 2</span>
+              <h3>编译器架构必须匹配</h3>
+              <p>32 位 ARM 和 64 位 ARM 工具链不同。交叉编译器不匹配时，程序即使编译成功，也可能在开发板上无法运行。</p>
+            </article>
+            <article class="pitfall-card">
+              <span class="mini-tag">重点 3</span>
+              <h3>优先用商家现成镜像</h3>
+              <p>现阶段没必要自己编内核、做 rootfs。先把 Linux 跑起来、能进 shell、能传程序，这样学习效率最高。</p>
+            </article>
+            <article class="pitfall-card">
+              <span class="mini-tag">重点 4</span>
+              <h3>尽量全程在 Ubuntu 完成</h3>
+              <p>不要总退回 Windows 工具思维。Linux 命令行、ssh、scp、minicom、nfs 这些能力本身就是你要学的内容。</p>
+            </article>
+            <article class="pitfall-card">
+              <span class="mini-tag">重点 5</span>
+              <h3>设备节点名不要硬背</h3>
+              <p>不同开发板的 LED、按键、串口节点名可能不一样。先 <code>ls /dev</code> 观察，再改代码中的路径。</p>
+            </article>
+            <article class="pitfall-card">
+              <span class="mini-tag">重点 6</span>
+              <h3>每个阶段都要留下产物</h3>
+              <p>至少保留源码、Makefile、编译命令和运行截图。这样你后面回头复习时会非常轻松。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="chain">
+          <div class="chain-box">
+            <h3>极简链路</h3>
+            <p>把这条链路刻进脑子里，后面做任何嵌入式 Linux 应用项目，本质上都在重复它。</p>
+            <div class="chain-flow">
+              <span>Ubuntu 写 C 程序</span>
+              <span>写 Makefile</span>
+              <span>交叉编译 ARM 程序</span>
+              <span>NFS / SCP 传开发板</span>
+              <span>chmod +x 授权</span>
+              <span>运行程序</span>
+              <span>控制硬件</span>
+            </div>
+            <p class="footer-note">如果你能不看资料，独立把这条链路跑通 3 次以上，就说明你已经真正入门嵌入式 Linux 应用开发了。</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
